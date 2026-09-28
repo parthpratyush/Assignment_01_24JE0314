@@ -25,17 +25,20 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Generate figures and numerical results
+      - name: Generate numerical figures
         run: python generate_figures.py
 
-      - name: Commit generated outputs
+      - name: Build PDF report
+        run: python build_report.py
+
+      - name: Commit generated submission outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add figures results.csv
+          git add figures results.csv REPORT.pdf
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
           else
-            git commit -m "Generate assignment figures [skip ci]"
+            git commit -m "Generate report and assignment figures [skip ci]"
             git push
           fi
