@@ -1,99 +1,139 @@
 # Numerical Study of Stagnation-Point Boundary-Layer Flow
 
-**Assignment 01 — Viscous Flow**
-
-**Student:** Pratyush Singh Parmar
-
+**Assignment 01 - Viscous Flow**  
+**Student:** Pratyush Singh Parmar  
 **Roll No.:** 24JE0314
 
 ## 1. Objective
 
-The aim is to obtain the similarity solution for the two-dimensional stagnation-point boundary layer and compare several numerical formulations.
+The objective is to obtain the similarity solution for two-dimensional stagnation-point flow and verify it using several numerical formulations.
 
 The governing equation is
 
-[
+$$
 f''' + f f'' - (f')^2 + 1 = 0,
-]
+$$
 
 with
 
-[
-f(0)=0,qquad f'(0)=0,qquad f'(infty)=1.
-]
+$$
+f(0)=0,qquad f'(0)=0,qquad f'(\infty)=1.
+$$
 
-For computation, the infinite boundary is replaced by eta infinity equal to 7.
+For computation the infinite boundary is replaced by the finite endpoint \(\eta_\infty=7\).
 
-## 2. First-order system
+## 2. Governing equation and first-order form
 
-With (y_1=f, y_2=f', y_3=f''),
+Define
 
-[
-y_1'=y_2,qquad y_2'=y_3,qquad
+$$
+y_1=f,qquad y_2=f',qquad y_3=f''.
+$$
+
+Then
+
+$$
+y_1'=y_2,qquad
+y_2'=y_3,qquad
 y_3'=y_2^2-y_1y_3-1.
-]
+$$
 
-The unknown wall parameter is (f''(0)).
+The unknown wall parameter is \(s=f''(0)\).
 
 ## 3. Numerical methods
 
-### Direct BVP collocation
+### 3.1 Direct BVP collocation
 
-The complete boundary-value problem is solved using SciPy's boundary-value solver, starting from a smooth hyperbolic-tangent velocity estimate.
+The complete boundary-value problem is solved with SciPy's collocation-based BVP solver. A smooth \(\tanh\)-type velocity profile provides the starting estimate.
 
-### Newton shooting
+### 3.2 IVP shooting with Newton correction
 
-For a trial value (s=f''(0)), the system is integrated as an IVP. The terminal residual is
+For a trial \(s\), the system is integrated from \(0\) to \(7\). The scalar residual is
 
-[
+$$
 R(s)=f'(7;s)-1.
-]
+$$
 
-Newton's method uses
+Newton's method updates the wall-shear guess according to
 
-[
-s_{k+1}=s_k-rac{R(s_k)}{R'(s_k)},
-]
+$$
+s_{k+1}=s_k-\frac{R(s_k)}{R'(s_k)}.
+$$
 
-with (R'(s)) estimated from a small forward perturbation.
+The derivative \(R'(s)\) is approximated with a small forward perturbation.
 
-### Fixed-step RK4 with sensitivity
+### 3.3 Fixed-step RK4 with sensitivity
 
-A classical fourth-order Runge–Kutta integrator is written directly. A sensitivity system for the derivative with respect to the initial shear is integrated alongside the physical solution, giving the Newton derivative from the same trajectory.
+The third method uses a classical fourth-order RK scheme written explicitly in Python. A sensitivity system for \(\partial f/\partial s\), \(\partial f'/\partial s\), and \(\partial f''/\partial s\) is integrated simultaneously so that the Newton derivative is obtained from the same solution.
 
-## 4. Boundary-layer measures
+## 4. Boundary-layer quantities
 
-The displacement and momentum thicknesses are computed from the velocity profile:
+The solution is also used to evaluate
 
-[
-delta^*=int_0^{eta_infty}(1-f'),deta,
-]
+$$
+\delta^*=\int_0^{\eta_\infty}(1-f')\,d\eta,
+$$
 
-[
-	heta=int_0^{eta_infty}f'(1-f'),deta.
-]
+$$
+\theta=\int_0^{\eta_\infty}f'(1-f')\,d\eta,
+$$
 
-The shape factor is (H=delta^*/	heta). The 99 percent thickness is found by interpolation at (f'=0.99).
+and
 
-## 5. Expected result
+$$
+H=\frac{\delta^*}{\theta}.
+$$
 
-A converged numerical calculation gives a wall-shear parameter close to
+The 99-percent thickness \(\delta_{99}\) is obtained by interpolation at \(f'=0.99\).
 
-[
-f''(0)approx 1.23258766.
-]
+## 5. Numerical results
 
-The generated figures provide checks using profile agreement, Newton residual reduction, finite-domain sensitivity, and RK4 refinement.
+| Method | \(f''(0)\) | Absolute error against 1.23258766 |
+|---|---:|---:|
+| Direct BVP | 1.232587656759 | 3.68e-9 |
+| IVP + Newton | 1.232587656723 | 3.65e-9 |
+| RK4 + sensitivity | 1.232587656595 | 3.59e-9 |
+
+The RK4 solution gives:
+
+- \(\delta_{99}=2.37946\)
+- \(\delta^*=0.647917\)
+- \(\theta=0.292328\)
+- \(H=2.21641\)
+
+### Solution profiles
+
+![solution profiles](../figures/solution_profiles.svg)
+
+### Newton convergence
+
+![Newton convergence](../figures/newton_convergence.svg)
+
+### Domain truncation
+
+![domain truncation](../figures/domain_truncation.svg)
+
+### RK4 refinement
+
+![RK4 refinement](../figures/rk4_refinement.svg)
+
+### Boundary-layer measures
+
+![Boundary-layer measures](../figures/boundary_layer_measures.svg)
+
+### Flow schematic
+
+![Flow schematic](../figures/stagnation_flow_schematic.svg)
 
 ## 6. Discussion
 
-The direct BVP formulation treats all boundary conditions together, while shooting turns the unknown wall shear into a scalar root-finding variable. The third formulation is useful as an independent implementation because the RK4 integrator and sensitivity equations are explicit.
+The three formulations give essentially identical values of the wall-shear parameter. The direct BVP formulation avoids a shooting guess, whereas shooting exposes the unknown wall shear explicitly. The sensitivity-based RK4 implementation provides an independent check because both the integrator and Newton derivative are constructed directly.
 
-The domain study shows the effect of replacing the infinite boundary by a finite computational endpoint. The RK4 refinement study provides a numerical check of fourth-order convergence.
+The domain study shows the effect of replacing an infinite far-field condition by a finite endpoint. The RK4 refinement study checks the expected fourth-order trend of the fixed-step implementation.
 
 ## 7. Conclusion
 
-The stagnation-point boundary-layer equation can be solved consistently using direct collocation and two shooting formulations. Agreement of the wall-shear parameter and velocity profiles provides a useful numerical verification.
+The stagnation-point similarity problem was solved with three independently organized numerical approaches. The computed wall shear agrees with the accepted benchmark to the digits relevant for the present study, and the supplementary convergence studies provide consistency checks on the computational domain and RK4 step size.
 
 ## References
 
