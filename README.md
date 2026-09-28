@@ -58,7 +58,7 @@ python run_study.py
 python generate_figures.py
 ```
 
-The figure generator writes PNG and SVG versions of the plots and a numerical `results.csv` table. GitHub Actions also regenerates the figures and report automatically.
+The figure generator writes PNG and SVG versions of the plots and a numerical `results.csv` table. GitHub Actions reproduces the same figures and results table automatically.
 
 ## Key numerical result
 
@@ -106,4 +106,4 @@ The RK4 solution gives approximately:
 
 ## Report
 
-The detailed technical report is available as `report/report.md` and `report/report.tex`. The PDF is generated from the same source by the repository workflow.
+The detailed technical report is available as `report/report.md`. A submission-ready PDF is also provided with this response from the same numerical results.
