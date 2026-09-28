@@ -1,6 +1,6 @@
 quantity,value
 Direct BVP f''(0),1.2325876567589533
-IVP + Newton f''(0),1.2325876567234861
+IVP + Newton f''(0),1.2325876567234864
 RK4 + sensitivity f''(0),1.2325876565945593
 Reference f''(0),1.23258766
 delta_99,2.3794624762342718
