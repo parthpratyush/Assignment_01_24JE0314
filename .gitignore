@@ -1,10 +1,9 @@
-# Python
+# Python cache and environments
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 .env
 
-# Generated output
-*.pdf
+# macOS
 .DS_Store
