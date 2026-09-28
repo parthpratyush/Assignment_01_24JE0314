@@ -1,0 +1,9 @@
+quantity,value
+Direct BVP f''(0),1.2325876567589533
+IVP + Newton f''(0),1.2325876567234861
+RK4 + sensitivity f''(0),1.2325876565945593
+Reference f''(0),1.23258766
+delta_99,2.3794624762342718
+displacement_thickness,0.6479165242061251
+momentum_thickness,0.2923275424685861
+shape_factor,2.216406017492351
