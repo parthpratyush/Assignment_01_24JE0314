@@ -15,19 +15,26 @@ with
 
 `f(0) = 0`, `f'(0) = 0`, and `f'(eta_inf) = 1`.
 
-The infinite computational domain is truncated at `eta_inf = 7`.
+The primary MATLAB submission uses `eta_inf = 6` (N = 1000, h = 0.006), matching the bisection + RK4 calculation used for the print-ready assignment. The Python verification study uses `eta_inf = 7` for additional numerical checks.
 
-## Methods
+## Submission method
+
+The print-ready assignment uses **Bisection shooting + classical fourth-order RK4**, with the unknown `f''(0)` determined from the outer condition `f'(6) = 1`. The cleaned MATLAB implementation is `StagnationPointFlow.m`.
+
+## Verification methods
 
 1. **Direct BVP collocation** - solves the complete boundary-value problem.
 2. **IVP shooting + Newton-Raphson** - treats `f''(0)` as the unknown shooting parameter.
 3. **Fixed-step RK4 + sensitivity equation** - an independent explicit integrator with propagated Newton derivative.
+
+These Python methods are retained as independent verification; they are not required for the basic printed submission.
 
 ## Repository structure
 
 ```text
 Assignment_01_24JE0314/
 ├── README.md
+├── StagnationPointFlow.m   # primary MATLAB submission method
 ├── requirements.txt
 ├── run_study.py
 ├── generate_figures.py
